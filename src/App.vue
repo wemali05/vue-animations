@@ -43,7 +43,7 @@
                     @leave-cancelled="leaveCancelled"
                     :css="false"
                     >
-                    <div style="height:100px; width:100px; background-color:lightgreen;" v-if="load"></div>
+                    <div style="height:100px; width:300px; background-color:lightgreen;" v-if="load"></div>
                 </transition>
             </div>
         </div>
@@ -56,17 +56,28 @@
             return {
                 show: false,
                 load: true,
-                alertAnimation: 'fade'
+                alertAnimation: 'fade',
+                elementWidth: 100
             }
         },
 
         methods: {
             beforeEnter(el){
                 console.log('beforeEnter');
+                this.elementWidth = 100;
+                el.style.width = this.elementWidth + 'px';
             },
             enter(el, done){
-                console.log('enter');
-                done();
+               console.log('enter');
+               let round = 1;
+               const interval = setInterval(()=> {
+                   el.style.width =  (this.elementWidth + round * 10) + 'px';
+                   round++;
+                   if(round > 20){
+                       clearInterval(interval);
+                       done();
+                   }
+               },20)
             },
             afterEnter(el){
                  console.log('afterEnter');
@@ -76,10 +87,20 @@
             },
             beforeLeave(el){
                   console.log('beforeLeave');
+                  this.elementWidth = 300;
+                  el.style.width = this.elementWidth + 'px';
             },
             leave(el, done){
                 console.log('leave');
-                done();
+                let round = 1;
+                const interval = setInterval(()=> {
+                   el.style.width =  (this.elementWidth - round * 10) + 'px';
+                   round++;
+                   if(round > 20){
+                       clearInterval(interval);
+                       done();
+                   }
+               },20)
             },
             afterLeave(el){
                   console.log('afterLeave');
